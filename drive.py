@@ -62,12 +62,13 @@ def telemetry(sid, data):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
+        # resize the imgage to match the training image size
         resized_image = cv.resize(image_array, (160, 80)) 
-        # flattened_image = resized_image.flatten()
         steering_angle = float(model.predict(resized_image[None, :, :, :], batch_size=1))
 
         throttle = controller.update(float(speed))
 
+        # print out the signals
         print(steering_angle, throttle)
         send_control(steering_angle, throttle)
 
